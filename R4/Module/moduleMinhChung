@@ -1,6 +1,6 @@
 
 ---1.Cập nhật trạng thái hóa đơn sau khi đã xác minh minh chứng
-alter table BangHoaDon add TrangThai char(1)
+alter table BangHoaDon add TrangThai int
 create or alter trigger tTrangThaiHD
 on MinhChung
 after insert
