@@ -1,14 +1,15 @@
 
 ---1.Cập nhật trạng thái hóa đơn sau khi đã xác minh minh chứng
-alter table BangHoaDon add TrangThai nvarchar(50)
+alter table BangHoaDon add TrangThai char(1)
 create or alter trigger tTrangThaiHD
 on MinhChung
 after insert
 as
 begin
 	update BangHoaDon
-	set Trangthai=N'Đã xác minh'
+	set Trangthai=1
 	where BHD_idBanghoadon in (select BHD_idBanghoadon from inserted)
+
 end
 
 select * from BangHoaDon
@@ -33,7 +34,7 @@ end;
 exec ThemAnhMC
 
 
---3,Thêm minh chứng mới
+--3,Thêm minh chứng mới, kiểm tra đã có mã MC và mã HĐ trước đó chưa
 create or alter trigger ThemMC
 on MinhChung
 instead of insert
