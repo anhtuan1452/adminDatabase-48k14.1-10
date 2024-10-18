@@ -27,7 +27,7 @@ begin
     begin
         raiserror(N'Ảnh chèn không hợp lệ', 16, 1);
         return;
-    endM
+    end
     insert into minhchung (MC_id, BHD_idBanghoadon, MC_anhminhchung)
     values (@mc_id, @bhd_idbanghoadon, @mc_anhminhchung);
 end;
