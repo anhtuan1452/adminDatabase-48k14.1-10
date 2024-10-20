@@ -5,8 +5,7 @@ create proc UpdateTrangthai
     @MC_trangthai int 
 as
 begin
-	
-    if exitst (select 1 from BangHoaDonwhere BHD_idBanghoadon = @BHD_id)
+    if exitst (select 1 from BangHoaDon where BHD_idBanghoadon = @BHD_id)
     begin
         select @MC_trangthai=MC_trangthai from MinhChung 
         if @MC_trangthai = 1
