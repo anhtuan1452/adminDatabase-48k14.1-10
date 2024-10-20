@@ -31,7 +31,7 @@ CREATE TABLE NguoiThuePhong (
     NTP_sodienthoai VARCHAR(15),
     NTP_tentaikhoan VARCHAR(50),
     NTP_matkhau VARCHAR(100),
-	NTP_loaitaikhoan int, ---1 tkoan dang su dung, 0 tai khoan bi khoa
+    NTP_loaitaikhoan int, ---1 tkoan dang su dung, 0 tai khoan bi khoa
     FOREIGN KEY (P_id) REFERENCES Phong(P_id)
 );
 
@@ -44,6 +44,7 @@ CREATE TABLE BangHoaDon (
     BHD_ngaylaphoadon DATE,
     BHD_tongsotien INT,
     BHD_tienphong INT,
+    BHD_trangthai INT,
     FOREIGN KEY (P_ID) REFERENCES Phong(P_id)
 );
 
@@ -52,7 +53,7 @@ CREATE TABLE MinhChung (
     MC_id INT PRIMARY KEY,
     BHD_idBanghoadon INT,
     MC_anhminhchung VARBINARY(MAX),
-	MC_trangthai int, --0 là chưa xác nhận 1 là xác nhận rồi.
+    MC_trangthai int, --0 là chưa xác nhận 1 là xác nhận rồi.
     FOREIGN KEY (BHD_idBanghoadon) REFERENCES BangHoaDon(BHD_idBanghoadon)
 );
 -- Tạo bảng Hóa đơn dịch vụ
