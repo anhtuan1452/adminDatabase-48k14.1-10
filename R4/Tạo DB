@@ -8,30 +8,30 @@ GO
 -- Tạo bảng Chủ trọ
 CREATE TABLE ChuTro (
     CT_IDChuTro INT PRIMARY KEY,
-    CT_TenChuTro VARCHAR(100),
-    CT_SoDienThoai VARCHAR(15),
-    CT_TenTaiKhoan VARCHAR(50),
-    CT_MatKhau VARCHAR(100)
+    CT_TenChuTro VARCHAR(100) NOT NULL,
+    CT_SoDienThoai VARCHAR(15) NOT NULL,
+    CT_TenTaiKhoan VARCHAR(50) NOT NULL,
+    CT_MatKhau VARCHAR(100) NOT NULL
 );
 
 -- Tạo bảng Phòng
 CREATE TABLE Phong (
-    P_id INT PRIMARY KEY,
-    P_sophong INT,
-    P_giaphong INT,
-    P_tinhtrangphong NVARCHAR(50)
+    P_id INT PRIMARY KEY NOT NULL,
+    P_sophong INT NOT NULL,
+    P_giaphong INT NOT NULL,
+    P_tinhtrangphong NVARCHAR(50) NOT NULL
 );
 
 -- Tạo bảng Người thuê phòng
 CREATE TABLE NguoiThuePhong (
-    NTP_IDnguoithuephong INT PRIMARY KEY,
-    P_id INT,
-    NTP_tenkhach VARCHAR(100),
-    NTP_anhcancuoc VARBINARY(MAX),
-    NTP_sodienthoai VARCHAR(15),
-    NTP_tentaikhoan VARCHAR(50),
-    NTP_matkhau VARCHAR(100),
-    NTP_loaitaikhoan int, ---1 tkoan dang su dung, 0 tai khoan bi khoa
+    NTP_IDnguoithuephong INT PRIMARY KEY NOT NULL,
+    P_id INT NOT NULL,
+    NTP_tenkhach VARCHAR(100) NOT NULL,
+    NTP_anhcancuoc VARBINARY(MAX) NOT NULL,
+    NTP_sodienthoai VARCHAR(15) NOT NULL,
+    NTP_tentaikhoan VARCHAR(50) NOT NULL,
+    NTP_matkhau VARCHAR(100) NOT NULL,
+    NTP_loaitaikhoan int NOT NULL, ---1 tkoan dang su dung, 0 tai khoan bi khoa
     FOREIGN KEY (P_id) REFERENCES Phong(P_id)
 );
 
@@ -39,21 +39,21 @@ CREATE TABLE NguoiThuePhong (
 
 -- Tạo bảng Bảng hóa đơn
 CREATE TABLE BangHoaDon (
-    BHD_idBanghoadon INT PRIMARY KEY,
-    P_ID INT,
-    BHD_ngaylaphoadon DATE,
-    BHD_tongsotien INT,
-    BHD_tienphong INT,
-    BHD_trangthai INT,
+    BHD_idBanghoadon INT PRIMARY KEY NOT NULL,
+    P_ID INT NOT NULL,
+    BHD_ngaylaphoadon DATE NOT NULL,
+    BHD_tongsotien INT NOT NULL,
+    BHD_tienphong INT NOT NULL,
+    BHD_trangthai INT NOT NULL,
     FOREIGN KEY (P_ID) REFERENCES Phong(P_id)
 );
 
 -- Tạo bảng Minh chứng
 CREATE TABLE MinhChung (
-    MC_id INT PRIMARY KEY,
-    BHD_idBanghoadon INT,
-    MC_anhminhchung VARBINARY(MAX),
-    MC_trangthai int, --0 là chưa xác nhận 1 là xác nhận rồi.
+    MC_id INT PRIMARY KEY NOT NULL,
+    BHD_idBanghoadon INT NOT NULL,
+    MC_anhminhchung VARBINARY(MAX) NOT NULL,
+    MC_trangthai int NOT NULL, --0 là chưa xác nhận 1 là xác nhận rồi.
     FOREIGN KEY (BHD_idBanghoadon) REFERENCES BangHoaDon(BHD_idBanghoadon)
 );
 
@@ -61,30 +61,30 @@ CREATE TABLE MinhChung (
 CREATE TABLE HopDong (
     HD_mahopdong INT PRIMARY KEY,
     P_id INT,
-    HD_tienphong INT,
-    HD_ngaybatdauthue DATE,
-    HD_thoihanthue VARCHAR(50),
-    HD_anhhopdong VARBINARY(MAX),
+    HD_tienphong INT NOT NULL,
+    HD_ngaybatdauthue DATE NOT NULL,
+    HD_thoihanthue VARCHAR(50) NOT NULL,
+    HD_anhhopdong VARBINARY(MAX) NOT NULL,
     FOREIGN KEY (P_id) REFERENCES Phong(P_id)
 );
 
 CREATE TABLE DichVu (
     DV_iddichvu INT PRIMARY KEY,
-    DV_tendichvu VARCHAR(50),
-    DV_tiencuadichvu INT
+    DV_tendichvu VARCHAR(50) NOT NULL,
+    DV_tiencuadichvu INT NOT NULL
 );
 
 CREATE TABLE HoaDonDichVu (
     HDDV_idhoadondichvu INT PRIMARY KEY,
-    BHD_idBanghoadon INT,
+    BHD_idBanghoadon INT ,
     FOREIGN KEY (BHD_idBanghoadon) REFERENCES BangHoaDon(BHD_idBanghoadon)
 );
 
 CREATE TABLE Hd_Dv (
     DV_iddichvu INT,
     HDDV_idhoadondichvu INT,
-    soluong INT,
-    tiendichvu INT,
+    soluong INT NOT NULL,
+    tiendichvu INT NOT NULL,
     PRIMARY KEY (DV_iddichvu, HDDV_idhoadondichvu),
     FOREIGN KEY (DV_iddichvu) REFERENCES DichVu(DV_iddichvu),
     FOREIGN KEY (HDDV_idhoadondichvu) REFERENCES HoaDonDichVu(HDDV_idhoadondichvu)
