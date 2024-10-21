@@ -8,7 +8,7 @@ proces: 1. Tạo hóa đơn cho phòng
 				-Lấy mã hóa đơn mới bằng cách lấy mã hóa đơn lớn nhất hiện có + 1
 				-Lấy ngày hiện tại khi tạo hóa đơn getdate()
 				-Lấy số tiền thuê phòng từ phòng tương ứng
-				-Tính tổng số tiền từ bảng HDDV_tiencuaDV + P_tienphong
+				-Tính tổng số tiền từ bảng HD_DV + P_tienphong
 				-Thêm BHD_trangthai = 0 vì chưa thanh toán
 				-Thêm Hóa Đơn vào BangHoaDon
 			2.2 nếu không có người thuê:
@@ -42,8 +42,10 @@ begin
 					select @BHD_tienphong = (select P_giaphong
 											 from phong
 											 where P_id = @P_idphong)
-					select @BHD_tongsotien = (select HDDV_tiencuaDV
-											  from HoaDonDichVu join BangHoaDon on HoaDonDichVu.BHD_idBanghoadon = BangHoaDon.BHD_idBanghoadon
+					select @BHD_tongsotien = (select sum(soluong*tiendichvu)
+											  from HoaDonDichVu 
+											  join BangHoaDon on HoaDonDichVu.BHD_idBanghoadon = BangHoaDon.BHD_idBanghoadon
+											  join HD_DV on HD_DV.HDDV_idhoadondichvu = HoaDonDichVu.HDDV_idhoadondichvu
 											  where HoaDonDichVu.BHD_idBanghoadon = @BHD_idbanghoadon)
 					set @BHD_tongsotien = @BHD_tongsotien +  @BHD_tienphong
 					insert into BangHoaDon (BHD_idbanghoadon, P_id, BHD_ngaylaphoadon, BHD_tongsotien, BHD_tienphong, BHD_TRANGTHAI) 
@@ -57,10 +59,3 @@ begin
 
 end
 
-
-go
-create or alter proc ThemHDDV
-as
-begin
-	declare @HDDV_idhoadondichvu int, BHD_idBanghoadon int, HDDV_tiencuaDV int
-end
