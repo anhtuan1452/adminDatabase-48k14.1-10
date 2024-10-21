@@ -56,14 +56,6 @@ CREATE TABLE MinhChung (
     MC_trangthai int, --0 là chưa xác nhận 1 là xác nhận rồi.
     FOREIGN KEY (BHD_idBanghoadon) REFERENCES BangHoaDon(BHD_idBanghoadon)
 );
--- Tạo bảng Hóa đơn dịch vụ
-CREATE TABLE HoaDonDichVu (
-    HDDV_idhoadondichvu INT PRIMARY KEY,
-    BHD_idBanghoadon INT,
-    HDDV_soluongDV INT,
-    HDDV_tiencuaDV INT,
-    FOREIGN KEY (BHD_idBanghoadon) REFERENCES BangHoaDon(BHD_idBanghoadon)
-);
 
 -- Tạo bảng Hợp đồng
 CREATE TABLE HopDong (
@@ -76,19 +68,24 @@ CREATE TABLE HopDong (
     FOREIGN KEY (P_id) REFERENCES Phong(P_id)
 );
 
--- Tạo bảng Dịch vụ
 CREATE TABLE DichVu (
     DV_iddichvu INT PRIMARY KEY,
-    HDDV_idhoadondichvu INT,
     DV_tendichvu VARCHAR(50),
     DV_tiencuadichvu INT
 );
--- Tạo bảng Hd_Dv (Liên kết giữa Hóa đơn dịch vụ và Dịch vụ)
+
+CREATE TABLE HoaDonDichVu (
+    HDDV_idhoadondichvu INT PRIMARY KEY,
+    BHD_idBanghoadon INT,
+    FOREIGN KEY (BHD_idBanghoadon) REFERENCES BangHoaDon(BHD_idBanghoadon)
+);
+
 CREATE TABLE Hd_Dv (
-	DV_iddichvu INT,
-	HDDV_idhoadondichvu INT,
-	tiendichvu INT,
-	PRIMARY KEY (DV_iddichvu, HDDV_idhoadondichvu),
-	FOREIGN KEY (DV_iddichvu) REFERENCES DichVu(DV_iddichvu),
-	FOREIGN KEY (HDDV_idhoadondichvu) REFERENCES HoaDonDichVu(HDDV_idhoadondichvu)
+    DV_iddichvu INT,
+    HDDV_idhoadondichvu INT,
+    soluong INT,
+    tiendichvu INT,
+    PRIMARY KEY (DV_iddichvu, HDDV_idhoadondichvu),
+    FOREIGN KEY (DV_iddichvu) REFERENCES DichVu(DV_iddichvu),
+    FOREIGN KEY (HDDV_idhoadondichvu) REFERENCES HoaDonDichVu(HDDV_idhoadondichvu)
 );
