@@ -1,0 +1,17 @@
+Create or ALTER   proc [dbo].[dumpHoaDon]
+as
+begin
+	declare @BHD_idBanghoadon INT=1,@P_ID INT,@BHD_ngaylaphoadon date, @BHD_tongsotien int, @BHD_tienphong int;
+	while @BHD_idBanghoadon <= 1000
+		begin
+			set @P_id = @BHD_idBanghoadon
+			set @BHD_ngaylaphoadon = '2020/04/15'
+			select  @BHD_tienphong = (select p_giaphong
+									   from Phong
+									   where P_id = @P_id) 
+			set @BHD_tongsotien = @BHD_tienphong + 200000
+			insert into BangHoaDon(BHD_idBanghoadon, P_ID, BHD_ngaylaphoadon, BHD_tongsotien, BHD_tienphong) values (@BHD_idBanghoadon, @P_id, @BHD_ngaylaphoadon, @BHD_tongsotien, @BHD_tienphong)
+			set @BHD_idBanghoadon = @BHD_idBanghoadon +1
+
+		end
+end
