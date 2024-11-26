@@ -13,8 +13,7 @@ create view BaoMat.Phong_View as
 select P_id, P_sophong, P_giaphong, P_tinhtrangphong
 from Phong;
 go 
---Schema bảng người thuê phòng
---không bao gồm ảnh căn cước và mật khẩu để bảo vệ tính riêng tư và bảo mật.(Cho người thuê)
+--Schema bảng người thuê phòng, không bao gồm ảnh căn cước và mật khẩu để bảo vệ tính riêng tư và bảo mật.(Cho người thuê)
 create or alter view BaoMat.NguoiThuePhongNgThue_View as
 select NTP_IDnguoithuephong, P_id, NTP_tenkhach, NTP_sodienthoai, NTP_tentaikhoan, NTP_loaitaikhoan
 from NguoiThuePhong;
@@ -110,6 +109,7 @@ begin
 end;
 go
 exec LayNguoiThueChoNguoiThue
+go
 --2.2 Lấy thông tin người thuê phòng (Dành cho chủ trọ)
 create or alter proc LayNguoiThueChoChuTro
 as
@@ -119,6 +119,7 @@ begin
 end
 go
 exec LayNguoiThueChoChuTro
+go
 --2.3 Truy vấn hợp đồng (Dành cho người thuê)
 create or alter proc LayHopDongChoNguoiThue
 as
@@ -128,6 +129,7 @@ begin
 end;
 go
 exec LayHopDongChoNguoiThue
+go
 --2.4 Truy vấn hợp đồng (Dành cho chủ trọ)
 create or alter proc LayHopDongChoChuTro
 as
@@ -137,6 +139,7 @@ begin
 end;
 go
 exec LayHopDongChoChuTro
+go
 --2.5 Lấy danh sách hóa đơn
 create or alter proc LayDanhSachHoaDon
 as
@@ -146,7 +149,7 @@ begin
 end;
 go
 exec LayDanhSachHoaDon
-
+go
 --3.
 --3.1 Mã hóa mật khẩu NTP đã có trong cơ sở dữ liệu
 create or alter proc MaHoaMatKhauHTai
@@ -160,7 +163,7 @@ go
 exec MaHoaMatKhauHTai
 select * from NguoiThuePhong
 select * from ChuTro
-
+go
 --3.2 Tự động cập nhật trạng thái hóa đơn sau khi xác minh minh chứng
 create or alter trigger UpdateTrangthai
 on BangHoaDon
@@ -199,8 +202,9 @@ begin
 end
 go
 
- --Thủ tục để thêm người thuê phòng một cách an toàn.
+ --3.4 Thủ tục để thêm người thuê phòng một cách an toàn.
 create or alter proc ThemNguoiThuePhong
+	@NTP_IDNguoithuephong INT,
     @P_id INT,
     @NTP_tenkhach VARCHAR(100),
     @NTP_anhcancuoc VARBINARY(MAX),
@@ -215,20 +219,26 @@ begin
 		print N'Đã tồn tại'
 		return
 	end
-    insert into NguoiThuePhong (P_id, NTP_tenkhach, NTP_anhcancuoc, NTP_sodienthoai, NTP_tentaikhoan, NTP_matkhau, NTP_loaitaikhoan)
-    values (@P_id, @NTP_tenkhach, @NTP_anhcancuoc, @NTP_sodienthoai, @NTP_tentaikhoan, HASHBYTES('SHA2_256', @NTP_matkhau), @NTP_loaitaikhoan);
+    insert into NguoiThuePhong (NTP_IDnguoithuephong,P_id, NTP_tenkhach, NTP_anhcancuoc, NTP_sodienthoai, NTP_tentaikhoan, NTP_matkhau, NTP_loaitaikhoan)
+    values (@NTP_IDNguoithuephong,@P_id, @NTP_tenkhach, @NTP_anhcancuoc, @NTP_sodienthoai, @NTP_tentaikhoan,
+	HASHBYTES('SHA2_256', @NTP_matkhau), @NTP_loaitaikhoan)
 end;
 go
 exec ThemNguoiThuePhong 
+	@NTP_IDNguoithuephong=1001,
 	@P_id =1001,
     @NTP_tenkhach= N'ThanhNgan',
-    @NTP_anhcancuoc ='',
+    @NTP_anhcancuoc =0x,
     @NTP_sodienthoai ='0142578952',
     @NTP_tentaikhoan ='user1001',
     @NTP_matkhau ='meow123',
     @NTP_loaitaikhoan =1
-
---- Thủ tục để thêm chủ trọ một cách an toàn.
+go
+insert into Phong (P_id, P_sophong,P_giaphong,P_tinhtrangphong )
+values(1001, 1001,1210395,'ok')
+select * from NguoiThuePhong where P_id=1001
+go
+--- 3.5 Thủ tục để thêm chủ trọ một cách an toàn.
 create or alter proc ThemChuTro
 	@CT_IDChuTro int,
     @CT_TenChuTro VARCHAR(100),
@@ -253,4 +263,4 @@ exec ThemChuTro
     @CT_SoDienThoai = '0912345679', 
     @CT_TenTaiKhoan = 'nguyenvanan', 
     @CT_MatKhau = 'MatKhau123!';
-select * from ChuTro where CT_SoDienThoai='0912345679'
+select * from ChuTro where CT_IDChuTro=1002
