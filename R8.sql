@@ -150,6 +150,47 @@ end;
 go
 exec LayDanhSachHoaDon
 go
+--2.6 Thủ tục xóa người thuê phòng
+create or alter proc  XoaNguoiThueTro
+    @NTP_IDnguoithuephong int
+as
+begin
+	if not exists (select 1 from NguoiThuePhong where NTP_IDnguoithuephong = @NTP_IDnguoithuephong)
+    begin
+        print N'Người thuê phòng không tồn tại'
+        return
+	end
+
+    delete from NguoiThuePhong 
+	where NTP_IDnguoithuephong = @NTP_IDnguoithuephong;
+    print  N'Xóa thành công'
+end
+
+exec XoaNguoiThueTro @NTP_IDnguoithuephong = 1;
+select * from NguoiThuePhong where @NTP_IDnguoithuephong = 1
+go
+
+--2.7 Thủ tục xóa Phòng
+create or alter proc  XoaPhong
+    @P_id int
+as
+begin
+	if not exists (select 1 from Phong where P_id = @P_id)
+    begin
+        print N'Phòng không tồn tại'
+        return
+	end
+    delete from HopDong where P_id = @P_id;
+    delete from BangHoaDon where P_ID = @P_id;
+    delete from Phong where P_id = @P_id;
+
+    print N'Xóa thành công.';
+end
+go
+
+exec XoaPhong @P_id = 1;
+select * from Phong
+go
 --3.
 --3.1 Mã hóa mật khẩu NTP đã có trong cơ sở dữ liệu
 create or alter proc MaHoaMatKhauHTai
