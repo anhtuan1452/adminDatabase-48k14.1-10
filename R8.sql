@@ -140,7 +140,7 @@ end;
 go
 exec LayHopDongChoChuTro
 go
---2.5 Lấy danh sách hóa đơn
+--2.5 Lấy danh sách hóa đơn (xem hóa đơn)
 create or alter proc LayDanhSachHoaDon
 as
 begin
@@ -180,17 +180,141 @@ begin
         print N'Phòng không tồn tại'
         return
 	end
+
     delete from HopDong where P_id = @P_id;
     delete from BangHoaDon where P_ID = @P_id;
-    delete from Phong where P_id = @P_id;
+	delete MC from MinhChung MC join BangHoaDon on BangHoaDon.BHD_idBanghoadon=MC.BHD_idBangHoaDon 
+	where BangHoaDon.P_ID = @P_id
+	
+	delete DV from DichVu DV join Hd_Dv HD on DV.DV_iddichvu = HD.DV_iddichvu
+							join HoaDonDichVu HDDV on HD.HDDV_idhoadondichvu = HDDV.HDDV_idhoadondichvu
+							join BangHoaDon  on HDDV.BHD_idBanghoadon = BangHoaDon.BHD_idBanghoadon
+    where BangHoaDon.P_ID = @P_id
 
+    delete HDDV from HoaDonDichVu HDDV
+    join BangHoaDon BHD on HDDV.BHD_idBanghoadon = BHD.BHD_idBanghoadon
+    where BHD.P_ID = @P_id;
+    
+	delete from Phong where P_id = @P_id;
     print N'Xóa thành công.';
 end
-go
 
 exec XoaPhong @P_id = 1;
 select * from Phong
 go
+--2.8 Thủ tục tìm chủ trọ nếu biết số điện thoại
+create or alter proc TimChuTro
+    @CT_SoDienThoai varchar(10)
+as
+begin
+    if not exists (select 1 from ChuTro where CT_SoDienThoai = @CT_SoDienThoai)
+    begin
+        print N'Không tìm thấy chủ trọ'
+        return
+    end
+
+    select
+        CT_IDChuTro ,
+        CT_TenChuTro ,
+        CT_SoDienThoai ,
+        CT_TenTaiKhoan
+    from ChuTro
+    where CT_SoDienThoai = @CT_SoDienThoai;
+end
+exec TimChuTro @CT_SoDienThoai = '0912345679';
+select * from ChuTro
+go
+--2.9 Thủ tục xóa chủ trọ
+create or alter proc XoaChuTro
+    @CT_IDChuTro int
+as
+begin
+    if not exists (select 1 from ChuTro where CT_IDChuTro = @CT_IDChuTro)
+    begin
+        print N'Chủ trọ không tồn tại';
+        return
+    end
+    delete ChuTro where CT_IDChuTro = @CT_IDChuTro;
+    print N'Xóa thành công';
+end
+go
+exec XoaChuTro @CT_IDChuTro=1002
+go
+--2.10 Thủ tục tìm người thuê phòng nếu biết số điện thoại
+create or alter proc TimNguoiThuePhong
+    @NTP_sodienthoai varchar(10)
+as
+begin
+    if not exists (select 1 from NguoiThuePhong where NTP_sodienthoai = @NTP_sodienthoai)
+    begin
+        print N'Không tìm thấy người thuê phòng'
+        return
+    end
+    select
+        NTP_IDnguoithuephong ,
+        P_id ,
+        NTP_tenkhach,
+        NTP_sodienthoai,
+        NTP_tentaikhoan,
+        NTP_loaitaikhoan
+    from NguoiThuePhong where NTP_sodienthoai = @NTP_sodienthoai;
+end
+select * from NguoiThuePhong
+exec TimNguoiThuePhong @NTP_sodienthoai='0968084456'
+go
+--2.11 Thủ tục cập nhật người thuê phòng
+create or alter proc SuaNguoiThuePhong
+    @NTP_IDnguoithuephong int,
+    @NTP_tenkhach varchar(100),
+    @NTP_sodienthoai varchar(15),
+    @NTP_tentaikhoan varchar(50),
+    @NTP_matkhau varchar(100),
+    @NTP_loaitaikhoan int 
+as
+begin
+    if not exists (select 1 from NguoiThuePhong where NTP_sodienthoai = @NTP_sodienthoai)
+    begin
+        print N'Không tìm thấy người thuê phòng'
+        return
+    end
+    UPDATE NguoiThuePhong
+    set
+        NTP_tenkhach = @NTP_tenkhach,
+        NTP_sodienthoai = @NTP_sodienthoai,
+        NTP_tentaikhoan = @NTP_tentaikhoan,
+        NTP_matkhau = @NTP_matkhau,
+        NTP_loaitaikhoan = @NTP_loaitaikhoan
+    where NTP_sodienthoai = @NTP_sodienthoai
+    print N'Cập nhật thành công.';
+end 
+
+select * from NguoiThuePhong
+exec SuaNguoiThuePhong 
+    @NTP_IDnguoithuephong = 2,
+    @NTP_tenkhach = 'Nguyễn Văn B',
+    @NTP_sodienthoai = '0968084456',
+    @NTP_tentaikhoan = 'nguyenvanb',
+    @NTP_matkhau = 'MatKhauMoi2024',
+    @NTP_loaitaikhoan = 1;
+go
+--2.12 Thủ tục tìm hóa đơn nếu biết mã hóa đơn
+create or alter proc TimHoaDon
+    @BHD_idBanghoadon int
+as
+begin
+    if not exists (select 1 from BangHoaDon where BHD_idBanghoadon = @BHD_idBanghoadon)
+    begin
+        print N'Mã hóa đơn không tồn tại';
+        return
+    end
+	
+	select * from BangHoaDon where BHD_idBanghoadon = @BHD_idBanghoadon;
+end
+
+exec TimHoaDon @BHD_idBanghoadon = 2;
+select * from BangHoaDon
+go
+
 --3.
 --3.1 Mã hóa mật khẩu NTP đã có trong cơ sở dữ liệu
 create or alter proc MaHoaMatKhauHTai
