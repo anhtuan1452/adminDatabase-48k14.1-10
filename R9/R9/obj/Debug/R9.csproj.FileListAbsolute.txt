@@ -1,0 +1,12 @@
+D:\ky 1 nam 3\QTri CSDL\R9\R9\bin\Debug\R9.exe.config
+D:\ky 1 nam 3\QTri CSDL\R9\R9\bin\Debug\R9.exe
+D:\ky 1 nam 3\QTri CSDL\R9\R9\bin\Debug\R9.pdb
+D:\ky 1 nam 3\QTri CSDL\R9\R9\obj\Debug\R9.csproj.AssemblyReference.cache
+D:\ky 1 nam 3\QTri CSDL\R9\R9\obj\Debug\R9.Properties.Resources.resources
+D:\ky 1 nam 3\QTri CSDL\R9\R9\obj\Debug\R9.csproj.GenerateResource.cache
+D:\ky 1 nam 3\QTri CSDL\R9\R9\obj\Debug\R9.csproj.CoreCompileInputs.cache
+D:\ky 1 nam 3\QTri CSDL\R9\R9\obj\Debug\R9.exe
+D:\ky 1 nam 3\QTri CSDL\R9\R9\obj\Debug\R9.pdb
+D:\ky 1 nam 3\QTri CSDL\R9\R9\obj\Debug\R9.Login.resources
+D:\ky 1 nam 3\QTri CSDL\R9\R9\obj\Debug\R9.Menu1.resources
+D:\ky 1 nam 3\QTri CSDL\R9\R9\obj\Debug\R9.QuanlyKH.resources
